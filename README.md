@@ -10,5 +10,4 @@ Usage
   For Linux Users:
     ./akash.sh
 ```
-
-
+[![Run on Repl.it](https://repl.it/badge/github/hackingguy/E-Bot)](https://repl.it/github/hackingguy/E-Bot)

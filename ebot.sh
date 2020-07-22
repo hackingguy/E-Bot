@@ -1,5 +1,4 @@
 pip3 install -r requirements.txt
-sudo apt-get install -y chromium-browser
-sudo apt-get install -y chromium-chromedriver
+chmod +x pyfiles/*
 ./pyfiles/ebot.py
 

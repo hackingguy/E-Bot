@@ -18,7 +18,7 @@ except:
     pass
 
 #Debug
-DEBUG=False
+DEBUG=True
 
 #Websites Don't Allow To Enter If You Don't Use Good Headers
 #I Love Apple Headers (Macintosh), Even I don't have one till now :)>
@@ -71,7 +71,7 @@ def search(anime):
             print("URL: {}".format(string))
         req = requests.get(string,headers=headers)
         page_html = req.content
-        page_soup = soup(page_html,"lxml")
+        page_soup = soup(page_html,"html.parser")
         containers = page_soup.findAll("div",{"class":"last_episodes"})
         result = list(containers[0].ul)
         result = list(filter(('\n').__ne__, result))
@@ -123,7 +123,7 @@ def ExtractEpisode(my_url):
                 sys.stdout.flush()
                 time.sleep(0.01)
         try:
-            html_soap = soup(response,"lxml")
+            html_soap = soup(response,"html.parser")
             main_url = str(html_soap.findAll("script")[2]).split("sources:[{file: '")[1].split("',label:")[0]
             print("{}{}".format(GREEN,TICK))
             return main_url
@@ -162,4 +162,5 @@ if __name__=="__main__":
         else:
             print("Sorry For The Issue")
     
-    
+    finally:
+        input("Press Any Key To Continue")

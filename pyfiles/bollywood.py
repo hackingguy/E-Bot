@@ -56,7 +56,7 @@ def search(movie_name):
         req = requests.get(myurl, headers=headers)
         response = req.content;
         page_html = response
-        page_soup = soup(page_html,"lxml")
+        page_soup = soup(page_html,"html.parser")
         containers = page_soup.findAll("a",{"rel":"bookmark"})
         if(len(containers)!=0):
             print("\n{}Found {}{}{} Results:\n".format(GREEN,RED,len(containers),GREEN))
@@ -77,7 +77,7 @@ def getMovieURL(choice,containers):
         req = requests.get(my_url, headers=headers)
         response = req.content
         page_html = response
-        page_soup = soup(page_html,"lxml")
+        page_soup = soup(page_html,"html.parser")
         containers = page_soup.findAll("iframe")
         loc=""
         try:
@@ -127,7 +127,7 @@ def removeAds_getCDN(movie_url):
                 print("{}2nd URL:{}{}".format(GREEN,WHITE,new_url))
             r = requests.get(new_url,headers=headers)
             res = r.content
-            html = soup(res,"lxml")
+            html = soup(res,"html.parser")
             packedJavaScript = str(html.findAll('script')[8])
             return unpacker(packedJavaScript)
         else:
@@ -162,4 +162,5 @@ if(__name__=="__main__"):
         else:
             print("{}Sorry For Issue!".format(RED))
     
-
+    finally:
+        input("{}Press Any Key To Continue....".format(GREEN))

@@ -14,7 +14,7 @@ except Exception as e:
     exit()
 
 #Debug
-DEBUG=True
+DEBUG=False
 
 #Websites Don't Allow To Enter If You Don't Use Good Headers
 #I Love Apple Headers (Macintosh), Even I don't have one till now :)>

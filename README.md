@@ -11,5 +11,5 @@ Usage
   For Windows Users:
     ./ebot.bat
   For Linux Users:
-    ./akash.sh
+    ./ebot.sh
 ```

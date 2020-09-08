@@ -31,18 +31,18 @@ try:
 
 
         choice = int(input())
-
-
+        dir_path = os.path.dirname(os.path.realpath(__file__))
         if(choice==1):
-            os.system("python pyfiles/anime.py")
+            os.system("{}/anime.py".format(dir_path))
+            input()
         elif(choice==2):
-            os.system("python pyfiles/bollywood.py")
+            os.system("{}/bollywood.py".format(dir_path))
         elif(choice==3):
-            os.system("python pyfiles/hollywood.py")
+            os.system("{}/hollywood.py".format(dir_path))
         elif(choice==4):
             break
         heading()
-
+    
     print("\n{}Thanks For Visiting Us!".format(YELLOW))
 
 except Exception as e:

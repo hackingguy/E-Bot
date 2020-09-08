@@ -66,7 +66,7 @@ def generateHTML(links):
 #Search Anime
 def search(anime):
     try:
-        string = "https://gogoanime.video//search.html?keyword="+("%20").join(anime.split())
+        string = "https://www25.gogoanimes.tv//search.html?keyword="+("%20").join(anime.split())
         if(DEBUG==True):
             print("URL: {}".format(string))
         req = requests.get(string,headers=headers)
@@ -91,7 +91,7 @@ def getAnime(animes_pack,start,end,choice):
     try:
         name = animes_pack[1][choice-1].p.a['href'][10::]
         name = name.lower()
-        url="https://gogoanime.video/"
+        url="https://www25.gogoanimes.tv/"
         url=url+name+"-episode-"
         anime_links = []
         for i in range(start,end+1):

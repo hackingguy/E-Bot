@@ -73,12 +73,22 @@ def search(anime):
         page_html = req.content
         page_soup = soup(page_html,"html.parser")
         containers = page_soup.findAll("div",{"class":"last_episodes"})
-        result = list(containers[0].ul)
-        result = list(filter(('\n').__ne__, result))
-        animes_names=[]
-        if(len(result)==0):
-            print("No Anime Found")
-            exit()
+        result = []
+        animes_names = []
+        try:
+          result = list(containers[0].ul)
+          result = list(filter(('\n').__ne__, result))
+          animes_names=[]
+
+          #Significance of below line is to remove false positives
+          #It will not be used
+          debugger = result[0].p.a['href'][10:]
+
+        except:
+          print("{}No Anime Found".format(RED))
+          input("{}Press Any Key To Continue...{}".format(GREEN,WHITE))
+          exit()
+        
         for i in range(0,len(result)):
             string =BLUE+str(i+1)+"."+WHITE+result[i].p.a['href'][10:].capitalize()
             animes_names.append(" ".join(string.split("-")))
@@ -156,11 +166,14 @@ if __name__=="__main__":
         links = getAnime(animes_pack,start,end,choice)
         print("\n{}Extraction Done".format(GREEN))
         generateHTML(links)
+      
+    except KeyboardInterrupt:
+      exit(0)
     except Exception as e:
         if(DEBUG==True): 
-            print("Error \n{}".format(e))
+            print("{}Error \n{}".format(RED,e))
         else:
-            print("Sorry For The Issue")
+            print("{}Sorry For The Issue".format(RED))
     
     finally:
-        input("Press Any Key To Continue")
+        input("\n{}Press Enter To Continue...".format(GREEN))

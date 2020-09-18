@@ -34,17 +34,18 @@ try:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         if(choice==1):
             os.system("{}/anime.py".format(dir_path))
-            input()
         elif(choice==2):
-            os.system("{}/bollywood.py".format(dir_path))
-        elif(choice==3):
             os.system("{}/hollywood.py".format(dir_path))
+        elif(choice==3):
+            os.system("{}/bollywood.py".format(dir_path))
         elif(choice==4):
             break
         heading()
     
     print("\n{}Thanks For Visiting Us!".format(YELLOW))
-
+except KeyboardInterrupt:
+    heading()
+    print("\n{}Thanks For Visiting Us!\n".format(YELLOW))
 except Exception as e:
     heading()
     print("\n{}Thanks For Visiting Us!\n{}".format(YELLOW,e))

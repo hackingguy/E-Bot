@@ -5,9 +5,9 @@ try:
     import os
     import re
     import sys
-    import html
     import requests
     import subprocess
+    import base64
     from bs4 import BeautifulSoup as soup
 except Exception as e:
     print(e)
@@ -62,6 +62,7 @@ def search(movie_name):
             print("\n{}Found {}{}{} Results:\n".format(GREEN,RED,len(containers),GREEN))
         else:
             print("{}No Movies Found!".format(RED))
+            input("{}Press Any Key To Continue...{}".format(GREEN,WHITE))
             exit()
         return containers
     except Exception as e:
@@ -73,7 +74,7 @@ def getMovieURL(choice,containers):
         title = containers[choice-1]["title"]
         my_url = containers[choice-1]["href"]
         if(DEBUG==True):
-            print("1st URL:{}".format(my_url))
+            print("{}1st URL:{}{}".format(GREEN,WHITE,my_url))
         req = requests.get(my_url, headers=headers)
         response = req.content
         page_html = response
@@ -117,18 +118,34 @@ def unpacker(data):
     except Exception as e:
         errorOccured("unpacker",e)
  
+def bypass_shortURLS(short_url):
+  try:
+      if "mixdrop" not in short_url:
+        base64_encoded_url = short_url.split("url=")[1].split("&type=")[0]
+        main_url = base64.b64decode(base64_encoded_url)
+        return main_url
+      else:
+        return short_url
+  except Exception as e:
+        errorOccured("bypass_shortURLS",e)
+
 #Uses Unpacker And Get Main CDN Link
 def removeAds_getCDN(movie_url):
     try:
         if "mixdrop" in movie_url:
-            r = requests.get(movie_url,headers=headers)
-            new_url = movie_url.split("/e/")[0]+str(r.content).split("window.location = \"")[1].split("\";")[0]
+            #These Were Not Useful Now Previously There Was A HTML Redirection
+            #r = requests.get(movie_url,headers=headers)
+            #new_url = movie_url.split("/e/")[0]+str(r.content).split("window.location = \"")[1].split("\";")[0]
             if(DEBUG==True):
-                print("{}2nd URL:{}{}".format(GREEN,WHITE,new_url))
-            r = requests.get(new_url,headers=headers)
+                print("{}2nd URL:{}{}".format(GREEN,WHITE,main_url))
+            r = requests.get(movie_url,headers=headers)
             res = r.content
-            html = soup(res,"html.parser")
-            packedJavaScript = str(html.findAll('script')[8])
+            htmlData = soup(res,"html.parser")
+            scriptTags = htmlData.findAll('script')
+            if(DEBUG==True):
+              for i in range(0,len(scriptTags)):
+                print("{}{}. JavaScript:{}\n\n{}\n\n".format(GREEN,i,WHITE,scriptTags[i]))
+            packedJavaScript = str(scriptTags[7])
             return unpacker(packedJavaScript)
         else:
             return movie_url
@@ -138,9 +155,12 @@ def removeAds_getCDN(movie_url):
 #Start VLC as SubProcess
 def startVLC(link):
     try:
-        p = subprocess.Popen([os.path.join("C:/", "Program Files", "VideoLAN", "VLC", "vlc.exe"),link])
+        if(sys.platform=="win32"):
+          p = subprocess.Popen([os.path.join("C:/", "Program Files", "VideoLAN", "VLC", "vlc.exe"),link])
+        else:
+          p = subprocess.Popen(["vlc",link])
     except Exception as e:
-        errorOccured("startVLC",e)
+        print("{}VLC Not Found And Please Note That Link Will not work without EBOT Session\nIf Present Please Check Environmental Variables{}".format(RED,GREEN))
 
 #Main
 if(__name__=="__main__"):
@@ -153,7 +173,10 @@ if(__name__=="__main__"):
             print("{}{}.{}{}".format(GREEN,i+1,WHITE,containers[i]["title"]))
         choice = int(input("\n{}Choose Any One Movie:{}".format(GREEN,WHITE)))
         movie_url = getMovieURL(choice,containers)
-        cdnLink = removeAds_getCDN(movie_url)
+        main_url = bypass_shortURLS(movie_url)
+        if(DEBUG==True):
+          print("{}Unshorten URL:{}{}".format(GREEN,WHITE,main_url))
+        cdnLink = removeAds_getCDN(main_url)
         print("\n{}URL:{} {}\n".format(GREEN,BLUE,cdnLink))
         startVLC(cdnLink)
     except Exception as e:
@@ -163,4 +186,4 @@ if(__name__=="__main__"):
             print("{}Sorry For Issue!".format(RED))
     
     finally:
-        input("{}Press Any Key To Continue....".format(GREEN))
+        input("\n{}Press Enter To Continue....".format(GREEN))

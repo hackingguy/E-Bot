@@ -14,7 +14,7 @@ except Exception as e:
     exit()
 
 #Debug
-DEBUG=False
+DEBUG=True
 
 #Websites Don't Allow To Enter If You Don't Use Good Headers
 #I Love Apple Headers (Macintosh), Even I don't have one till now :)>
@@ -50,14 +50,35 @@ def errorOccured(fun_name,e):
 #Search For Movies On Openloadtv.co (Soon Adding More Websites)
 def search(movie_name):
     try:
-        myurl = "https://openloadtv.co/?s=" +movie_name+"&asl_active=1&p_asid=1&p_asl_data=cXRyYW5zbGF0ZV9sYW5nPTAmc2V0X2ludGl0bGU9Tm9uZSZzZXRfaW5jb250ZW50PU5vbmUmc2V0X2luZXhjZXJwdD1Ob25lJnNldF9pbnBvc3RzPU5vbmUmY3VzdG9tc2V0JTVCJTVEPW1vdmll"
+        headers = {
+        'authority': 'openloadtv.co',
+        'accept': '*/*',
+        'dnt': '1',
+        'x-requested-with': 'XMLHttpRequest',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 Edg/86.0.622.61',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'origin': 'https://openloadtv.co',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-mode': 'cors',
+        'referer': 'https://openloadtv.co/',
+        'accept-language': 'en-US,en;q=0.9'
+        }
+        data = {
+          's': movie_name,
+          'id': '12528',
+          'post_type': 'movie',
+          'action': 'is_ajax_load_posts',
+          'page': '1',
+          'security': 'e50474a00e'
+        }
+        myurl = 'https://openloadtv.co/wp-admin/admin-ajax.php'
         if(DEBUG==True):
             print("Search URL:{}".format(myurl))
-        req = requests.get(myurl, headers=headers)
+        req = requests.post(myurl, headers=headers,data=data)
         response = req.content;
         page_html = response
         page_soup = soup(page_html,"html.parser")
-        containers = page_soup.findAll("a",{"rel":"bookmark"})
+        containers = page_soup.findAll("a")
         if(len(containers)!=0):
             print("\n{}Found {}{}{} Results:\n".format(GREEN,RED,len(containers),GREEN))
         else:
@@ -71,8 +92,7 @@ def search(movie_name):
 #Mixdrop URL
 def getMovieURL(choice,containers):
     try:
-        title = containers[choice-1]["title"]
-        my_url = containers[choice-1]["href"]
+        my_url = containers[2*(choice-1)+1]["href"]
         if(DEBUG==True):
             print("{}1st URL:{}{}".format(GREEN,WHITE,my_url))
         req = requests.get(my_url, headers=headers)
@@ -136,6 +156,7 @@ def removeAds_getCDN(movie_url):
             #These Were Not Useful Now Previously There Was A HTML Redirection
             #r = requests.get(movie_url,headers=headers)
             #new_url = movie_url.split("/e/")[0]+str(r.content).split("window.location = \"")[1].split("\";")[0]
+            movie_url = movie_url.replace("/f/","/e/")
             if(DEBUG==True):
                 print("{}2nd URL:{}{}".format(GREEN,WHITE,main_url))
             r = requests.get(movie_url,headers=headers)
@@ -169,8 +190,9 @@ if(__name__=="__main__"):
             heading()
         movie_name="+".join(input("\n{}Enter Name Of Movie:{}".format(GREEN,WHITE)).split())
         containers=search(movie_name)
-        for i in range(0,len(containers)):
-            print("{}{}.{}{}".format(GREEN,i+1,WHITE,containers[i]["title"]))
+        for i in range(0,int(len(containers)/2)):
+            name =' '.join(str(containers[2*i+1]["href"]).split("/")[-2].split("-"))
+            print("{}{}.{}{}".format(GREEN,i+1,WHITE,name))
         choice = int(input("\n{}Choose Any One Movie:{}".format(GREEN,WHITE)))
         movie_url = getMovieURL(choice,containers)
         main_url = bypass_shortURLS(movie_url)

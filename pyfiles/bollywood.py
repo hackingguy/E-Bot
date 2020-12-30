@@ -14,7 +14,7 @@ except Exception as e:
     exit()
 
 #Debug
-DEBUG=True
+DEBUG=False
 
 #Websites Don't Allow To Enter If You Don't Use Good Headers
 #I Love Apple Headers (Macintosh), Even I don't have one till now :)>
@@ -63,14 +63,7 @@ def search(movie_name):
         'referer': 'https://openloadtv.co/',
         'accept-language': 'en-US,en;q=0.9'
         }
-        data = {
-          's': movie_name,
-          'id': '12528',
-          'post_type': 'movie',
-          'action': 'is_ajax_load_posts',
-          'page': '1',
-          'security': 'e50474a00e'
-        }
+        data = "s="+movie_name+"&id=12528&post_type=movie&action=is_ajax_load_posts&page=1&security=32d4ef6611"
         myurl = 'https://openloadtv.co/wp-admin/admin-ajax.php'
         if(DEBUG==True):
             print("Search URL:{}".format(myurl))

@@ -51,19 +51,10 @@ def errorOccured(fun_name,e):
 def search(movie_name):
     try:
         headers = {
-        'authority': 'openloadtv.co',
-        'accept': '*/*',
-        'dnt': '1',
         'x-requested-with': 'XMLHttpRequest',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 Edg/86.0.622.61',
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'origin': 'https://openloadtv.co',
-        'sec-fetch-site': 'same-origin',
-        'sec-fetch-mode': 'cors',
-        'referer': 'https://openloadtv.co/',
-        'accept-language': 'en-US,en;q=0.9'
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
         }
-        data = "s="+movie_name+"&id=12528&post_type=movie&action=is_ajax_load_posts&page=1&security=32d4ef6611"
+        data = "s="+movie_name+"&id=12528&post_type=movie&action=is_ajax_load_posts&page=1&security=4061d2e378"
         myurl = 'https://openloadtv.co/wp-admin/admin-ajax.php'
         if(DEBUG==True):
             print("Search URL:{}".format(myurl))
@@ -105,7 +96,11 @@ def getMovieURL(choice,containers):
         except:
             try:
                 containers = page_soup.findAll('a')
-                loc=containers[36]["href"]
+                containers = containers[25:]
+                for i in containers:
+                  if "mixdrop" in i["href"]:
+                    loc=i["href"]
+                    break
                 return loc
             except:
                 print("{}Resource Not Found".format(RED))
